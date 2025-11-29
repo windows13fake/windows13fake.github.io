@@ -3,182 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Cloud Privé</title>
+    <title>Mon Cloud Perso</title>
     <style>
-        /* CSS pour le style */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            transition: background-image 0.5s ease-in-out;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-        }
-
-        #loginScreen h2, #cloudScreen h2 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        input[type="password"] {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #007bff;
+            background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=maman+je+taime');
+            background-size: cover;
+            background-attachment: fixed;
             color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            text-align: center;
+            padding: 20px;
         }
-
-        button:hover {
-            background-color: #0056b3;
+        #login {
+            margin-top: 200px;
         }
-
-        #cloudScreen {
-            display: none; /* Caché par défaut */
+        #fileArea {
+            display: none;
+            margin-top: 50px;
         }
-
-        .file-list {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #eee;
+        input, button {
             padding: 10px;
-            border-radius: 5px;
+            margin: 10px;
+        }
+        #fileList {
+            margin-top: 20px;
             text-align: left;
-        }
-
-        .file-list li {
-            padding: 8px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .file-list li:last-child {
-            border-bottom: none;
-        }
-
-        .unlock-button {
-            background-color: #28a745;
-        }
-        .unlock-button:hover {
-            background-color: #218838;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-
-    <!-- Écran de Connexion -->
-    <div id="loginScreen" class="container">
-        <h2>Accès à mon Cloud</h2>
-        <p>Veuillez entrer le code d'accès pour continuer.</p>
-        <input type="password" id="passwordInput" placeholder="Code d'accès">
-        <br>
-        <button onclick="checkPassword()">Déverrouiller</button>
+    <div id="login">
+        <h1>Mon Cloud Perso</h1>
+        <input type="password" id="password" placeholder="Code d'accès">
+        <button onclick="checkPassword()">Accéder</button>
     </div>
 
-    <!-- Écran du Cloud (caché au début) -->
-    <div id="cloudScreen" class="container">
-        <h2>Bienvenue dans votre Cloud</h2>
-        <p>Voici les fichiers que vous avez enregistrés ici.</p>
-        <ul id="fileList" class="file-list">
-            <!-- Les fichiers seront ajoutés ici avec JavaScript -->
-        </ul>
-        <br>
-        <button onclick="lockCloud()">Verrouiller</button>
+    <div id="fileArea">
+        <h2>Mes Fichiers</h2>
+        <input type="file" id="fileUpload" multiple>
+        <button onclick="uploadFile()">Uploader</button>
+        <div id="fileList"></div>
     </div>
 
     <script>
-        // Le mot de passe et le message secret
-        const CORRECT_PASSWORD = "160902";
-        const SECRET_MESSAGE = "maman je taime";
+        const correctPassword = "160902";
 
-        // Fonction pour vérifier le mot de passe
         function checkPassword() {
-            const userInput = document.getElementById('passwordInput').value;
-            if (userInput === CORRECT_PASSWORD) {
-                unlockCloud();
+            const password = document.getElementById("password").value;
+            if (password === correctPassword) {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("fileArea").style.display = "block";
+                loadFiles();
             } else {
-                alert("Code d'accès incorrect. Veuillez réessayer.");
-                document.getElementById('passwordInput').value = '';
+                alert("Code incorrect !");
             }
         }
 
-        // Fonction pour déverrouiller et afficher le cloud
-        function unlockCloud() {
-            // Change le fond d'écran avec le message secret
-            document.body.style.backgroundImage = `url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=\${encodeURIComponent(SECRET_MESSAGE)}')`;
-            
-            // Affiche l'écran du cloud et cache l'écran de login
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('cloudScreen').style.display = 'block';
+        function uploadFile() {
+            const files = document.getElementById("fileUpload").files;
+            if (files.length === 0) return;
 
-            // Charge et affiche la liste des fichiers
-            displayFiles();
+            // Ici, tu devrais envoyer les fichiers vers un serveur ou utiliser localStorage (limité)
+            // Pour un vrai cloud, il faut un backend (PHP, Node.js, etc.)
+            alert("Fonctionnalité d'upload à implémenter avec un serveur !");
         }
 
-        // Fonction pour verrouiller le cloud
-        function lockCloud() {
-            // Remet le fond d'écran par défaut
-            document.body.style.backgroundImage = 'none';
-            
-            // Cache l'écran du cloud et affiche l'écran de login
-            document.getElementById('cloudScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('passwordInput').value = ''; // Efface le champ mot de passe
+        function loadFiles() {
+            // Ici, tu devrais récupérer la liste des fichiers depuis un serveur
+            // Pour l'exemple, on affiche un message
+            document.getElementById("fileList").innerHTML = "<p>Aucun fichier pour l'instant.</p>";
         }
-        
-        // Fonction pour afficher les fichiers (ici, c'est une simulation)
-        function displayFiles() {
-            const fileListElement = document.getElementById('fileList');
-            fileListElement.innerHTML = ''; // Vide la liste actuelle
-
-            // Liste de fichiers simulés
-            const simulatedFiles = [
-                'document_important.txt',
-                'photo_vacances.mp3', // J'ai mis .mp3 comme dans votre exemple
-                'projet_final.pdf',
-                'video_souvenir.avi'
-            ];
-
-            simulatedFiles.forEach(file => {
-                const listItem = document.createElement('li');
-                listItem.textContent = file;
-                fileListElement.appendChild(listItem);
-            });
-        }
-
-        // Permet de déverrouiller en appuyant sur "Entrée" dans le champ du mot de passe
-        document.getElementById('passwordInput').addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                checkPassword();
-            }
-        });
     </script>
-
 </body>
 </html>
