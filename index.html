@@ -3,184 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud a Lisa</title>
+    <title>Mon Cloud Privé</title>
     <style>
-        /* Style général pour le fond et la police */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-            background-color: #000;
-            color: #0f0;
-        }
-
-        /* Style de l'écran de vérification du mot de passe */
-        #lockScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #111;
+        /* CSS pour le style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            transition: background-image 0.5s ease-in-out;
         }
 
-        #lockScreen h1 {
-            color: #0f0;
-            margin-bottom: 20px;
-            text-shadow: 0 0 5px #0f0;
-        }
-
-        #lockScreen input {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #0f0;
-            background-color: #222;
-            color: #0f0;
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
-        }
-
-        #lockScreen button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #0f0;
-            color: #111;
-            border: none;
-            transition: background-color 0.3s;
-        }
-
-        #lockScreen button:hover {
-            background-color: #0a0;
-        }
-
-        #lockScreen .error-message {
-            color: #f00;
-            margin-top: 10px;
-            text-shadow: 0 0 5px #f00;
-        }
-
-        /* Style de l'application principale (le cloud) */
-        #app {
-            display: none; /* Caché par défaut */
-            width: 100%;
-            height: 100%;
-            background-image: url('https://i.imgur.com/kGjYg2C.jpeg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        #app::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Assombrit le fond pour mieux lire le texte */
-            z-index: 1;
-        }
-
-        #cloudContent {
-            position: relative;
-            z-index: 2;
             width: 90%;
-            height: 90%;
-            margin: 5% auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 2px solid #0f0;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-            overflow-y: auto;
-            white-space: pre-wrap; /* Pour que les sauts de ligne fonctionnent */
-            word-wrap: break-word; /* Pour que les longs mots passent à la ligne */
-            font-size: 18px;
-            line-height: 1.5;
-            color: #0f0;
-            text-shadow: 0 0 3px #0f0;
+            max-width: 500px;
         }
 
-        /* Pour que la zone de texte soit éditable */
-        #cloudContent:focus {
-            outline: none;
-            border-color: #0a0;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+        #loginScreen h2, #cloudScreen h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #cloudScreen {
+            display: none; /* Caché par défaut */
+        }
+
+        .file-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .file-list li {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .unlock-button {
+            background-color: #28a745;
+        }
+        .unlock-button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
 
-    <!-- Écran de verrouillage -->
-    <div id="lockScreen">
-        <h1>Accès Restreint</h1>
-        <input type="password" id="passwordInput" placeholder="Entrez le code d'accès" onkeydown="if(event.key==='Enter'){checkPassword()}">
+    <!-- Écran de Connexion -->
+    <div id="loginScreen" class="container">
+        <h2>Accès à mon Cloud</h2>
+        <p>Veuillez entrer le code d'accès pour continuer.</p>
+        <input type="password" id="passwordInput" placeholder="Code d'accès">
+        <br>
         <button onclick="checkPassword()">Déverrouiller</button>
-        <p class="error-message" id="errorMessage"></p>
     </div>
 
-    <!-- Application principale (le cloud) -->
-    <div id="app">
-        <div id="cloudContent" contenteditable="true" placeholder="Écrivez ce que vous voulez ici..."></div>
+    <!-- Écran du Cloud (caché au début) -->
+    <div id="cloudScreen" class="container">
+        <h2>Bienvenue dans votre Cloud</h2>
+        <p>Voici les fichiers que vous avez enregistrés ici.</p>
+        <ul id="fileList" class="file-list">
+            <!-- Les fichiers seront ajoutés ici avec JavaScript -->
+        </ul>
+        <br>
+        <button onclick="lockCloud()">Verrouiller</button>
     </div>
 
     <script>
-        // Le code secret
-        const SECRET_CODE = "160902";
-        // La clé pour sauvegarder le texte dans le stockage local
-        const STORAGE_KEY = "monCloudTexte";
+        // Le mot de passe et le message secret
+        const CORRECT_PASSWORD = "160902";
+        const SECRET_MESSAGE = "maman je taime";
 
         // Fonction pour vérifier le mot de passe
         function checkPassword() {
-            const input = document.getElementById('passwordInput');
-            const errorMessage = document.getElementById('errorMessage');
-            const lockScreen = document.getElementById('lockScreen');
-            const app = document.getElementById('app');
-
-            if (input.value === SECRET_CODE) {
-                // Bon mot de passe : on cache l'écran de verrouillage et on affiche l'app
-                lockScreen.style.display = 'none';
-                app.style.display = 'block';
-                loadContent(); // On charge le contenu sauvegardé
+            const userInput = document.getElementById('passwordInput').value;
+            if (userInput === CORRECT_PASSWORD) {
+                unlockCloud();
             } else {
-                // Mauvais mot de passe : on affiche un message d'erreur
-                errorMessage.textContent = 'Code incorrect. Réessayez.';
-                input.value = '';
-                setTimeout(() => {
-                    errorMessage.textContent = '';
-                }, 3000);
+                alert("Code d'accès incorrect. Veuillez réessayer.");
+                document.getElementById('passwordInput').value = '';
             }
         }
 
-        // Fonction pour charger le contenu depuis le stockage local
-        function loadContent() {
-            const contentDiv = document.getElementById('cloudContent');
-            const savedContent = localStorage.getItem(STORAGE_KEY);
-            if (savedContent) {
-                contentDiv.textContent = savedContent;
-            }
+        // Fonction pour déverrouiller et afficher le cloud
+        function unlockCloud() {
+            // Change le fond d'écran avec le message secret
+            document.body.style.backgroundImage = `url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=\${encodeURIComponent(SECRET_MESSAGE)}')`;
+            
+            // Affiche l'écran du cloud et cache l'écran de login
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('cloudScreen').style.display = 'block';
+
+            // Charge et affiche la liste des fichiers
+            displayFiles();
         }
 
-        // Fonction pour sauvegarder le contenu à chaque modification
-        function saveContent() {
-            const contentDiv = document.getElementById('cloudContent');
-            localStorage.setItem(STORAGE_KEY, contentDiv.textContent);
+        // Fonction pour verrouiller le cloud
+        function lockCloud() {
+            // Remet le fond d'écran par défaut
+            document.body.style.backgroundImage = 'none';
+            
+            // Cache l'écran du cloud et affiche l'écran de login
+            document.getElementById('cloudScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('passwordInput').value = ''; // Efface le champ mot de passe
         }
-
-        // On ajoute un écouteur d'événements pour sauvegarder à chaque fois que l'utilisateur tape
-        document.getElementById('cloudContent').addEventListener('input', saveContent);
         
-        // On met le focus sur le champ du mot de passe au chargement de la page
-        window.onload = function() {
-            document.getElementById('passwordInput').focus();
-        };
+        // Fonction pour afficher les fichiers (ici, c'est une simulation)
+        function displayFiles() {
+            const fileListElement = document.getElementById('fileList');
+            fileListElement.innerHTML = ''; // Vide la liste actuelle
+
+            // Liste de fichiers simulés
+            const simulatedFiles = [
+                'document_important.txt',
+                'photo_vacances.mp3', // J'ai mis .mp3 comme dans votre exemple
+                'projet_final.pdf',
+                'video_souvenir.avi'
+            ];
+
+            simulatedFiles.forEach(file => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file;
+                fileListElement.appendChild(listItem);
+            });
+        }
+
+        // Permet de déverrouiller en appuyant sur "Entrée" dans le champ du mot de passe
+        document.getElementById('passwordInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
     </script>
 
 </body>
